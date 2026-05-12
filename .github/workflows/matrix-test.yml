@@ -1,0 +1,36 @@
+name: Matrix Test (shared)
+
+on:
+  workflow_call:
+    inputs:
+      environments:
+        description: 'JSON array of environment names'
+        required: true
+        type: string
+    outputs:
+      summary:
+        value: ${{ jobs.aggregate.outputs.summary }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        env: ${{ fromJSON(inputs.environments) }}
+    steps:
+      - run: |
+          echo "Running test pass for: ${{ matrix.env }}"
+          sleep 2
+
+  aggregate:
+    needs: run
+    runs-on: ubuntu-latest
+    outputs:
+      summary: ${{ steps.s.outputs.summary }}
+    steps:
+      - id: s
+        run: |
+          SUMMARY="Tested across ${{ inputs.environments }}"
+          echo "summary=$SUMMARY" >> "$GITHUB_OUTPUT"
+          echo "$SUMMARY"
