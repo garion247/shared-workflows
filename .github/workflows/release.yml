@@ -1,0 +1,35 @@
+name: Release (shared)
+
+on:
+  workflow_call:
+    inputs:
+      target:
+        required: true
+        type: string
+      environments:
+        required: true
+        type: string
+    outputs:
+      version:
+        value: ${{ jobs.build.outputs.version }}
+      summary:
+        value: ${{ jobs.matrix.outputs.summary }}
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      target: ${{ inputs.target }}
+
+  matrix:
+    uses: ./.github/workflows/matrix-test.yml
+    with:
+      environments: ${{ inputs.environments }}
+
+  report:
+    needs: [ build, matrix ]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Build version: ${{ needs.build.outputs.version }}"
+          echo "Matrix summary: ${{ needs.matrix.outputs.summary }}"
