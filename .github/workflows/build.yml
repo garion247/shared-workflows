@@ -6,6 +6,10 @@ on:
       target:
         required: true
         type: string
+      # NEW REQUIRED INPUT — breaking change
+      release-channel:
+        required: true
+        type: string
     outputs:
       version:
         value: ${{ jobs.build.outputs.version }}
@@ -18,5 +22,6 @@ jobs:
     steps:
       - id: v
         run: |
-          echo "version=1.0.${{ github.run_number }}+${{ inputs.target }}" >> "$GITHUB_OUTPUT"
-          echo "Build for ${{ inputs.target }} at v1.0.1"
+          VERSION="2.0.${{ github.run_number }}+${{ inputs.target }}-${{ inputs.release-channel }}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "v2 build: $VERSION"
