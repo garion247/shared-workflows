@@ -6,22 +6,20 @@ on:
       target:
         required: true
         type: string
-      # NEW REQUIRED INPUT — breaking change
       release-channel:
         required: true
         type: string
-    outputs:
-      version:
-        value: ${{ jobs.build.outputs.version }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.v.outputs.version }}
     steps:
-      - id: v
+      - name: Probe for caller env (will be empty)
         run: |
-          VERSION="2.0.${{ github.run_number }}+${{ inputs.target }}-${{ inputs.release-channel }}"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "v2 build: $VERSION"
+          echo "CALLER_ENV inside reusable workflow: '$CALLER_ENV'"
+          echo "(This is empty - reusable workflows do not inherit the caller's env)"
+
+      - name: Show callee inputs
+        run: |
+          echo "target: ${{ inputs.target }}"
+          echo "release-channel: ${{ inputs.release-channel }}"
