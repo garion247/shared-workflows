@@ -1,0 +1,23 @@
+name: Build (shared)
+
+on:
+  workflow_call:
+    inputs:
+      target:
+        required: true
+        type: string
+    outputs:
+      version:
+        value: ${{ jobs.build.outputs.version }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+    steps:
+      - id: v
+        run: |
+          VERSION="1.0.${{ github.run_number }}+${{ inputs.target }}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Built shared workflow for ${{ inputs.target }}: $VERSION"
