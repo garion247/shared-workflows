@@ -18,6 +18,5 @@ jobs:
     steps:
       - id: v
         run: |
-          VERSION="1.0.${{ github.run_number }}+${{ inputs.target }}"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Built shared workflow for ${{ inputs.target }}: $VERSION"
+          echo "version=1.0.${{ github.run_number }}+${{ inputs.target }}" >> "$GITHUB_OUTPUT"
+          echo "Build for ${{ inputs.target }} at v1.0.1"
